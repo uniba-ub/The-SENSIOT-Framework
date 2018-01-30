@@ -9,15 +9,14 @@ language: bash
 branches:
   only:
     - master
-    - develop
 env:
   global:
     - NAME=sensiot
-    - VERSION=${TRAVIS_BRANCH}
+    - VERSION=latest
 
 jobs:
   include:
-    - stage: Build images (latest)
+    - stage: Build images
       before_install:
         - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" || true
       env:
@@ -29,5 +28,5 @@ jobs:
       env:
         - ARCH=arm
       script: make
-    - stage: Make manifest (latest)
+    - stage: Make manifest
       script: make manifest
