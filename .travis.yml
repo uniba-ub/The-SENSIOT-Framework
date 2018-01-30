@@ -21,7 +21,6 @@ jobs:
       env:
         - ARCH=amd64
         - VERSION=latest
-        - BRANCH=master
       script: make
     -
       before_install:
@@ -29,27 +28,7 @@ jobs:
       env:
         - ARCH=arm
         - VERSION=latest
-        - BRANCH=master
       script: make
     - stage: Make manifest (latest)
       env: VERSION=latest
-      script: make manifest
-    - stage: Build images (develop)
-      before_install:
-        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" || true
-      env:
-        - ARCH=amd64
-        - VERSION=develop
-        - BRANCH=develop
-      script: make
-    -
-      before_install:
-        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" || true
-      env:
-        - ARCH=arm
-        - VERSION=develop
-        - BRANCH=develop
-      script: make
-    - stage: Make manifest (develop)
-      env: VERSION=develop
       script: make manifest
