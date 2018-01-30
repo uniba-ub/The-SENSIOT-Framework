@@ -12,6 +12,7 @@ branches:
 env:
   global:
     - NAME=sensiot
+    - VERSION=latest
 
 jobs:
   include:
@@ -20,15 +21,12 @@ jobs:
         - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" || true
       env:
         - ARCH=amd64
-        - VERSION=latest
       script: make
     -
       before_install:
         - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" || true
       env:
         - ARCH=arm
-        - VERSION=latest
       script: make
     - stage: Make manifest (latest)
-      env: VERSION=latest
       script: make manifest
