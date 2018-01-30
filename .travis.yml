@@ -9,10 +9,11 @@ language: bash
 branches:
   only:
     - master
+    - develop
 env:
   global:
     - NAME=sensiot
-    - VERSION=latest
+    - VERSION=${TRAVIS_BRANCH}
 
 jobs:
   include:
