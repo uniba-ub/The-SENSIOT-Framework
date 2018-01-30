@@ -1,0 +1,68 @@
+#cloud-config
+hostname: {HOSTNAME}
+manage_etc_hosts: true
+
+users:
+  - name: {USER}
+    gecos: "{GECOS}"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    home: {HOME}
+    shell: /bin/bash
+    groups: users,docker
+    lock_passwd: true
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCz/JVKdb+3yh0RNm0QX4CH/YWQep+uZmKmszjVjWuI7Kam9dZsrzqG48tafKTCNLTOOWIb6lnhY9Ud23w8OAuo8Tp027mLvoimhfSZ4FRAlbM65ItgnP0RVa0nqzy6YX/cgA56Sx72FvMfl+/FuqcVhipvJC8SrhTrJm74eY5AhL2fvKvBlOe2nxUOkV0p+oPu5cNu6Wwhh4teEKp/prGAGqw2mVusYHW01oWbE/FyMS2Q6gW/N+DuVD38tZu01hr0fNNky7zpdQfxxPfttv+dsvwa7O7TpYBiLspI0R54+aS2ABA7brN2/7ZolptQ5Aq3uMj5jF5TjyZf9RXCo0OkmlYz4fxGmodsATSQSxAL9qvgwBxGWEkLt/+3e4VCxPj++hp4gAqvJWApEUN0iskuUUjRiAFBPWWCHSiH5UNBcF1XD9bYBJNHZtuc6EgQj5DgiJ53X2yzhnjw+13EBiUyAdK9SLIGe9WYzVoh3OToJhp8LMuMqujRVxFCl73ukZ12mYyFFMuqqX1qdS8ql/dpyOekRrb8YHEDUvchP6Cz/P/7/5a6LbCi8O45tKQ9oYVfAKU3tVvEZDJas6ecwDIxzljIiym7mj7FIfwcaWx+dQVnqgX+RrAnf4myELtUGEfp3yip5VmSm91wBtjjjdlhjXJTGU4jeFEeK4gQusOOEQ== cardno:000606948162
+
+
+package_upgrade: false
+packages:
+  - ca-certificates
+  - curl
+  - tmux
+  - vim
+
+runcmd:
+  - sed -i -e "s|#PasswordAuthentication yes|PasswordAuthentication no|g" /etc/ssh/sshd_config
+  - systemctl restart sshd.service
+
+  - sed -ie "s|Servers=.*||g" /etc/systemd/timesyncd.conf
+  - echo "Servers={TIMESERVER}" | sudo tee -a /etc/systemd/timesyncd.conf
+  - systemctl restart systemd-timesyncd.service
+
+  - sed -e "s|ExecStart=/usr/bin/dockerd.*|ExecStart=/usr/bin/dockerd|g" /lib/systemd/system/docker.service | sudo tee /etc/systemd/system/docker.service
+  - systemctl daemon-reload
+  - systemctl restart docker.service
+
+  - docker pull {IMAGE}
+  - docker pull {NSQ_IMAGE}
+
+  - docker swarm join --token  {SWARM_TOKEN} {SWARM_LEADER_IP}
+
+power_state:
+  mode: reboot
+  message: Bye Bye
+  condition: True
+  timeout: 1
+
+write_files:
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "storage-driver":"overlay2",
+        "hosts":[
+          "unix:///var/run/docker.sock"
+        ]
+      }
+  - path: /etc/sensiot/local_configuration.json
+    content: |
+      {
+        "meta": {
+          "architecture": "{ARCHITECTURE}",
+          "device_id": "{DEVICE_ID}"
+        },
+        "location": {
+          "building": "{BUILDING}",
+          "room": "{ROOM}"
+        },
+        "local_sensors": {}
+      }

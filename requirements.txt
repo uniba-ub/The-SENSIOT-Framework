@@ -1,0 +1,11 @@
+docker
+gnsq
+gevent
+pyserial
+flask
+flask-restful
+pymemcache
+influxdb
+pygelf
+prometheus_client
+certifi

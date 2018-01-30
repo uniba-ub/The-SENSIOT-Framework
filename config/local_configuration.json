@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "architecture": "amd64",
+    "device_id": "RPiDev1"
+  },
+  "location": {
+    "building": "L9",
+    "room": "Living Room"
+  },
+  "local_sensors": {
+  }
+}

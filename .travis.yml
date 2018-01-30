@@ -1,0 +1,55 @@
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+sudo: required
+services:
+    - docker
+language: bash
+branches:
+  only:
+    - master
+env:
+  global:
+    - NAME=sensiot
+
+jobs:
+  include:
+    - stage: Build images (latest)
+      before_install:
+        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}"
+      env:
+        - ARCH=amd64
+        - VERSION=latest
+        - BRANCH=master
+      script: make
+    -
+      before_install:
+        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}"
+      env:
+        - ARCH=arm
+        - VERSION=latest
+        - BRANCH=master
+      script: make
+    - stage: Make manifest (latest)
+      env: VERSION=latest
+      script: make manifest
+    - stage: Build images (develop)
+      before_install:
+        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}"
+      env:
+        - ARCH=amd64
+        - VERSION=develop
+        - BRANCH=develop
+      script: make
+    -
+      before_install:
+        - docker pull "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}"
+      env:
+        - ARCH=arm
+        - VERSION=develop
+        - BRANCH=develop
+      script: make
+    - stage: Make manifest (develop)
+      env: VERSION=develop
+      script: make manifest

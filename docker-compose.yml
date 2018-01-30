@@ -1,0 +1,178 @@
+version: '3.3'
+
+networks:
+  backend:
+
+services:
+  nsqlookupd:
+    image: nsqio/nsq:latest
+    entrypoint: nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+    networks:
+      backend:
+
+  nsqd:
+    image: nsqio/nsq:latest
+    entrypoint: ["nsqd", "--lookupd-tcp-address=nsqlookupd:4160"]
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+    networks:
+      backend:
+
+  nsqadmin:
+    image: nsqio/nsq:latest
+    entrypoint: ["nsqadmin", "--lookupd-http-address=nsqlookupd:4161"]
+    networks:
+      backend:
+    ports:
+      - "4171:4171"
+
+  nsqcli:
+    image: nsqio/nsq:latest
+    command: ["nsq_tail","-lookupd-http-address","nsqlookupd:4161","-topic","sensors"]
+    networks:
+      backend:
+    restart: on-failure
+
+  memcached:
+    image: memcached:latest
+    command: memcached -vv
+    networks:
+      backend:
+
+  influxdb:
+    image: influxdb:latest
+    networks:
+      backend:
+
+  chronograf:
+    image: chronograf:latest
+    command: chronograf --influxdb-url=http://influxdb:8086
+    networks:
+      backend:
+    ports:
+      - "8888:8888"
+
+  grafana:
+    image: grafana/grafana:latest
+    # TODO: https://github.com/grafana/grafana-docker/issues/51
+    # secrets:
+    #   - source: grafana.ini
+    #     target: /etc/grafana/grafana.ini
+    # Alternative:
+    env_file:
+      - ./config/grafana/grafana.env
+    networks:
+      backend:
+    ports:
+      - "3000:3000"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./config/prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      backend:
+    ports:
+      - "9090:9090"
+
+#################################################
+  local_manager:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/sensiot.json:/app/sensiot.json
+      - ./config/local_configuration.json:/etc/sensiot/local_configuration.json
+    networks:
+      backend:
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "local_manager"
+
+#################################################
+  json_memcache_writer:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - ./config/sensiot.json:/app/sensiot.json
+    networks:
+      backend:
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "sensor_data_memcache_writer"
+
+#################################################
+  influxdb_writer:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - ./config/sensiot.json:/app/sensiot.json
+    networks:
+      backend:
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "influxdb_writer"
+
+#################################################
+  prometheus_writer:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - ./config/sensiot.json:/app/sensiot.json
+    networks:
+      backend:
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "prometheus_writer"
+    ports:
+      - "8000:8000"
+
+#################################################
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - ./config/sensiot.json:/app/sensiot.json
+    networks:
+      backend:
+    ports:
+      - "5000:5000"
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "web"
+
+#################################################
+  sensor_list:
+    build:
+      context: ./
+      dockerfile: Dockerfile.amd64
+    image: r3r57/sensiot:develop-amd64
+    volumes:
+      - ./config/sensiot.json:/app/sensiot.json
+    networks:
+      backend:
+    tty: true
+    environment:
+      CONFIG: ./sensiot.json
+      SERVICE: "sensor_list_memcache_writer"
