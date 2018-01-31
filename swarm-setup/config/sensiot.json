@@ -23,16 +23,17 @@
       "label": "sensiot-sensor-container",
       "network_name": "nsq-net",
       "global_sensors": {
-        "ash2200": {
+        "sensor_mock_1": {
           "service": "temperature_humidity_sensor",
-          "type": "ash2200",
+          "type": "mock",
           "image": "r3r57/sensiot:latest-multiarch",
-          "devices": ["/dev/ttyUSB0"],
+          "devices": [],
           "command": "",
           "configuration": {
-            "device": "/dev/ttyUSB0",
-            "baudrate": "9600",
-            "timeout": 200
+            "sensor_count": 5,
+            "temperature": 25.0,
+            "humidity": 62.0,
+            "interval": 60
           }
         }
       }
