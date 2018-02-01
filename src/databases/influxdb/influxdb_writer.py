@@ -35,7 +35,7 @@ class InfluxDBWriter(threading.Thread):
                 logger.info("Received data from queue and put into Influxdb")
                 counter += 1
                 msgps = counter / (time.time() - start)
-                logger.error("Messages per second: {}".format(str(msgps)))
+                logger.debug("Messages per second: {}".format(str(msgps)))
         logger.info("Stopped {}".format(self.name))
 
     def __send_data(self, line):

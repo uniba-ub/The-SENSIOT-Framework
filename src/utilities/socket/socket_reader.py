@@ -56,7 +56,7 @@ class SocketReader (threading.Thread):
                         connection.close()
                         counter += 1
                         msgps = counter / (time.time() - start)
-                        logger.error("Messages per second: {}".format(str(msgps)))
+                        logger.debug("Messages per second: {}".format(str(msgps)))
                 except socket.timeout:
                     logger.info("Socket timed out...retrying")
                 except Exception as e:

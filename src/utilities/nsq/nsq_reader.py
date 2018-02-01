@@ -87,4 +87,4 @@ class NsqReader (threading.Thread):
         self.queue.put(str(data))
         self.counter += 1
         msgps = self.counter / (time.time() - self.starttime)
-        logger.error("Messages per second: {}".format(str(msgps)))
+        logger.debug("Messages per second: {}".format(str(msgps)))

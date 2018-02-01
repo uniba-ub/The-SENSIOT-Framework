@@ -62,7 +62,7 @@ class NsqWriter (threading.Thread):
                     logger.info("Received data from queue and put into NSQ")
                     counter += 1
                     msgps = counter / (time.time() - start)
-                    logger.error("Messages per second: {}".format(str(msgps)))
+                    logger.debug("Messages per second: {}".format(str(msgps)))
                 else:
                     logger.error("Unable to send data to NSQ")
         logger.info("Stopped {}".format(self.name))

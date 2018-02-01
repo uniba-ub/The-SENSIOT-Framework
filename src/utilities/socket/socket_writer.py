@@ -46,7 +46,7 @@ class SocketWriter (threading.Thread):
                     sock.close()
                     counter += 1
                     msgps = counter / (time.time() - start)
-                    logger.error("Messages per second: {}".format(str(msgps)))
+                    logger.debug("Messages per second: {}".format(str(msgps)))
             else:
                 self.event.wait(5)
         logger.info("Stopped: {}".format(self.name))
