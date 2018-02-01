@@ -17,7 +17,7 @@ class NsqReader (threading.Thread):
         self.config = config
         self.queue = queue
         self.counter = 0
-        self.start = 0
+        self.starttime = 0
         self.timeout = int(self.config["connection"]["timeout"])
         self.max_tries = int(self.config["connection"]["max_tries"])
 
@@ -57,7 +57,7 @@ class NsqReader (threading.Thread):
 
     def run(self):
         self.counter = 0
-        self.start = time.time()
+        self.starttime = time.time()
         logger.info("Started: {}".format(self.name))
         try:
             process = Process(target=self.reader.start)
@@ -86,5 +86,5 @@ class NsqReader (threading.Thread):
         data = message.body.decode()
         self.queue.put(str(data))
         self.counter += 1
-        msgps = self.counter / (time.time() - self.start)
+        msgps = self.counter / (time.time() - self.starttime)
         logger.error("Messages per second: {}".format(str(msgps)))
