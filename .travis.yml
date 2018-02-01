@@ -8,11 +8,11 @@ services:
 language: bash
 branches:
   only:
-    - master
+    - develop
 env:
   global:
     - NAME=sensiot
-    - VERSION=latest
+    - VERSION=develop
 
 jobs:
   include:

@@ -47,6 +47,8 @@ class NsqWriter (threading.Thread):
                     return False
 
     def run(self):
+        counter = 0
+        start = time.time()
         logger.info("Started {}".format(self.name))
         while not self.event.is_set() and not self.__check_connection():
             logger.info("Checking again in 60 seconds...")
@@ -57,6 +59,9 @@ class NsqWriter (threading.Thread):
                 data = self.queue.get()
                 if self.__send(data):
                     logger.info("Received data from queue and put into NSQ")
+                    counter += 1
+                    msgps = counter / (time.time() - start)
+                    logger.error("Messages per second: {}".format(str(msgps)))
                 else:
                     logger.error("Unable to send data to NSQ")
         logger.info("Stopped {}".format(self.name))

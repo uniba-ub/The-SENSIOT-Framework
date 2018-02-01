@@ -33,6 +33,8 @@ class SocketReader (threading.Thread):
             logger.error("{}".format(e))
 
         try:
+            counter = 0
+            start = time.time()
             while not self.event.is_set():
                 try:
                     logger.info('Waiting for incoming connections...')
@@ -52,6 +54,9 @@ class SocketReader (threading.Thread):
                             self.queue.put(decoded_message)
                             logger.info("Data put into queue")
                         connection.close()
+                        counter += 1
+                        msgps = counter / (time.time() - start)
+                        logger.error("Messages per second: {}".format(str(msgps)))
                 except socket.timeout:
                     logger.info("Socket timed out...retrying")
                 except Exception as e:

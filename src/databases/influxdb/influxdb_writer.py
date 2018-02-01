@@ -22,6 +22,8 @@ class InfluxDBWriter(threading.Thread):
         logger.info("{} initialized successfully".format(self.name))
 
     def run(self):
+        counter = 0
+        start = time.time()
         logger.info("Started {}".format(self.name))
         while not self.event.is_set():
             self.event.wait(1)
@@ -30,6 +32,9 @@ class InfluxDBWriter(threading.Thread):
                 influxdb_format = self.converter.convert(data)
                 self.__send_data(influxdb_format.get())
                 logger.info("Received data from queue and put into Influxdb")
+                counter += 1
+                msgps = counter / (time.time() - start)
+                logger.error("Messages per second: {}".format(str(msgps)))
         logger.info("Stopped {}".format(self.name))
 
     def __send_data(self, line):

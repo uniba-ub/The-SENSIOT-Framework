@@ -27,6 +27,8 @@ class SocketWriter (threading.Thread):
             logger.error(str(msg))
 
     def run(self):
+        counter = 0
+        start = time.time()
         logger.info("Started: {}".format(self.name))
         while not self.event.is_set():
             if not self.queue.empty():
@@ -38,9 +40,12 @@ class SocketWriter (threading.Thread):
                     logger.info("Wrote data to socket")
                 except Exception as e:
                     logger.error(e)
-                    self.event.wait(1);
+                    self.event.wait(1)
                 finally:
                     sock.close()
+                    counter += 1
+                    msgps = counter / (time.time() - start)
+                    logger.error("Messages per second: {}".format(str(msgps)))
             else:
                 self.event.wait(5)
         logger.info("Stopped: {}".format(self.name))
