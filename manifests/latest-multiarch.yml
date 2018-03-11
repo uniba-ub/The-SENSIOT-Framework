@@ -1,0 +1,11 @@
+image: r3r57/sensiot:latest-multiarch
+manifests:
+  - image: r3r57/sensiot:latest-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: r3r57/sensiot:latest-arm
+    platform:
+      architecture: arm
+      os: linux
+

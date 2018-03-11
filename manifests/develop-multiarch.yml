@@ -1,0 +1,11 @@
+image: r3r57/sensiot:develop-multiarch
+manifests:
+  - image: r3r57/sensiot:develop-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: r3r57/sensiot:develop-arm
+    platform:
+      architecture: arm
+      os: linux
+
