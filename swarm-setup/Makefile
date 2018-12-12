@@ -1,5 +1,5 @@
-start-all: start_environment start_sensiot
-stop-all: stop_sensiot stop_environment
+start-all: start-environment start-sensiot
+stop-all: stop-sensiot stop-environment
 
 help:
 	@echo 'Management commands for the SENSIOT Framework'
@@ -58,7 +58,7 @@ endef
 ###############################################
 # Start/Stop Environment                      #
 ###############################################
-start-environment: create-directories create-networks create-secrets create_infrastructure
+start-environment: create-directories create-networks create-secrets create-infrastructure
 stop-environment: remove-infrastructure remove-secrets remove-networks
 
 create-directories:
