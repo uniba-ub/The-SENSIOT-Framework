@@ -1,0 +1,112 @@
+version: 2
+defaults: &defaults
+  working_directory: ~/The-SENSIOT-Framework
+  machine: true
+
+jobs:
+  build_amd64:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Build image for amd64
+          command: make ARCHITECTURES=amd64
+      - run:
+          name: Test image for amd64
+          command: make ARCHITECTURES=amd64 test
+      - deploy:
+          name: Push image for amd64 to dockerhub
+          command: make ARCHITECTURES=amd64 push
+  build_i386:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Build image for i386
+          command: make ARCHITECTURES=i386
+      - run:
+          name: Test image for i386
+          command: make ARCHITECTURES=i386 test
+      - deploy:
+          name: Push image for i386 to dockerhub
+          command: make ARCHITECTURES=i386 push
+  build_arm32v5:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Build image for arm32v5
+          command: make ARCHITECTURES=arm32v5
+      - run:
+          name: Test image for arm32v5
+          command: make ARCHITECTURES=arm32v5 test
+      - deploy:
+          name: Push image for arm32v5 to dockerhub
+          command: make ARCHITECTURES=arm32v5 push
+  build_arm32v7:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Build image for arm32v7
+          command: make ARCHITECTURES=arm32v7
+      - run:
+          name: Test image for arm32v7
+          command: make ARCHITECTURES=arm32v7 test
+      - deploy:
+          name: Push image for arm32v7 to dockerhub
+          command: make ARCHITECTURES=arm32v7 push
+  build_arm64v8:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Build image for arm64v8
+          command: make ARCHITECTURES=arm64v8
+      - run:
+          name: Test image for arm64v8
+          command: make ARCHITECTURES=arm64v8 test
+      - deploy:
+          name: Push image for arm64v8 to dockerhub
+          command: make ARCHITECTURES=arm64v8 push
+  manifest:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: make manifest
+  badge:
+    <<: *defaults
+    steps:
+      - run: curl -X POST https://hooks.microbadger.com/images/unibaktr/nodeexporter/Dz2x-5CLL85BZXqv2mjHWVD0dLE=
+
+tag_filter: &tag_filter
+  filters:
+    tags:
+      only: /.*/
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build_amd64:
+          <<: *tag_filter
+      - build_i386:
+          <<: *tag_filter
+      - build_arm32v5:
+          <<: *tag_filter
+      - build_arm32v7:
+          <<: *tag_filter
+      - build_arm64v8:
+          <<: *tag_filter
+      - manifest:
+          requires:
+            - build_amd64
+            - build_i386
+            - build_arm32v5
+            - build_arm32v7
+            - build_arm64v8
+          <<: *tag_filter
+#      - badge:
+#          requires:
+#            - manifest
+#          <<: *tag_filter

@@ -1,37 +1,69 @@
-#Needs the following environment variables:
-#	NAME - the application name in lowercase
-#	ARCH - the architecture type, e.g 'amd64'
-#	VERSION - the version
-#	DOCKER_USER - the docker username
-#	DOCKER_PASS - the docker password
-#	DOCKER_REPO - the docker repository
-default: all
-all: push
+ARCHITECTURES = amd64 i386 arm32v5 arm32v7 arm64v8
+IMAGE_TARGET = python:3.6.2-slim
+MULTIARCH = multiarch/qemu-user-static:register
+QEMU_VERSION = v2.11.0
+VERSION = $(shell cat VERSION)
+#DOCKER_USER = test
+#DOCKER_PASS = test
+ifeq ($(REPO),)
+  REPO = sensiot
+endif
+ifeq ($(CIRCLE_TAG),)
+	TAG = latest
+else
+	TAG = $(CIRCLE_TAG)
+endif
 
-help:
-	@echo 'Makefile targets to build and push Docker images'
-	@echo
-	@echo 'Usage:'
-	@echo '	build			Builds the image for given ARCH'
-	@echo '	push			Pushes the image to given DOCKER_REPO'
-	@echo '	manifest		Creates manifest'
-	@echo '	clean			Removes temporary folders'
-	@echo
+all: $(ARCHITECTURES)
 
-build:
-	docker run --rm --privileged multiarch/qemu-user-static:register --reset
-	curl -sL https://github.com/multiarch/qemu-user-static/releases/download/v2.9.1/qemu-arm-static.tar.gz | tar -xzC .
-	docker build --pull --cache-from ${DOCKER_USER}/${NAME}:${VERSION}-${ARCH} --build-arg VCS_URL=${TRAVIS_REPO_SLUG} --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=${TRAVIS_COMMIT} --build-arg VERSION=${VERSION} -t "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}" -f Dockerfile.${ARCH} .
+$(ARCHITECTURES):
+	@docker run --rm --privileged $(MULTIARCH) --reset
+	@docker build \
+			--build-arg IMAGE_TARGET=$@/$(IMAGE_TARGET) \
+			--build-arg QEMU=$(strip $(call qemuarch,$@)) \
+			--build-arg QEMU_VERSION=$(QEMU_VERSION) \
+			--build-arg ARCH=$@ \
+			--build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
+			--build-arg VCS_REF=$(shell git rev-parse --short HEAD) \
+			--build-arg VCS_URL=$(shell git config --get remote.origin.url) \
+			--build-arg VERSION=$(VERSION) \
+			-t $(REPO):linux-$@-$(TAG) .
 
-push: build
-	docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} ${DOCKER_REPO}
-	docker push "${DOCKER_USER}/${NAME}:${VERSION}-${ARCH}"
+push:
+	@docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
+	@$(foreach arch,$(ARCHITECTURES), docker push $(REPO):linux-$(arch)-$(TAG);)
+	@docker logout
 
 manifest:
-	docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} ${DOCKER_REPO}
-	wget https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64
-	chmod +x manifest-tool-linux-amd64
-	./manifest-tool-linux-amd64 push from-spec manifests/${VERSION}-multiarch.yml
+	@wget -O docker https://6582-88013053-gh.circle-artifacts.com/1/work/build/docker-linux-amd64
+	@chmod +x docker
+	@./docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
+	@./docker manifest create $(REPO):$(TAG) \
+			$(foreach arch,$(ARCHITECTURES), $(REPO):linux-$(arch)-$(TAG)) --amend
+	@$(foreach arch,$(ARCHITECTURES), ./docker manifest annotate \
+			$(REPO):$(TAG) $(REPO):linux-$(arch)-$(TAG) \
+			--os linux $(strip $(call convert_variants,$(arch)));)
+	@./docker manifest push $(REPO):$(TAG)
+	@./docker logout
+	@rm -f docker
 
-clean:
-	rm -rf qemu-arm-static
+
+test:
+	@docker network create -d bridge trial
+	@$(foreach arch,$(ARCHITECTURES), \
+			docker run --net=host --network trial -d \
+			--name=sensiot $(REPO):linux-$(arch)-$(TAG); \
+			sleep 10; \
+			docker ps -a | grep sensiot; \
+			docker rm -f sensiot;)
+	@docker network rm trial
+
+# Needed convertions for different architecture naming schemes
+# Convert qemu archs to naming scheme of https://github.com/multiarch/qemu-user-static/releases
+define qemuarch
+	$(shell echo $(1) | sed -e "s|arm32.*|arm|g" -e "s|arm64.*|aarch64|g" -e "s|amd64|x86_64|g")
+endef
+# Convert Docker manifest entries according to https://docs.docker.com/registry/spec/manifest-v2-2/#manifest-list-field-descriptions
+define convert_variants
+	$(shell echo $(1) | sed -e "s|amd64|--arch amd64|g" -e "s|i386|--arch 386|g" -e "s|arm32v5|--arch arm --variant v5|g" -e "s|arm32v6|--arch arm --variant v6|g" -e "s|arm32v7|--arch arm --variant v7|g" -e "s|arm64v8|--arch arm64 --variant v8|g" -e "s|ppc64le|--arch ppc64le|g" -e "s|s390x|--arch s390x|g")
+endef
