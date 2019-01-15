@@ -3,8 +3,9 @@
 [![License](https://img.shields.io/github/license/uniba-ktr/The-SENSIOT-Framework.svg?style=popout)]()
 [![](https://images.microbadger.com/badges/version/unibaub/sensiot:latest.svg)](https://microbadger.com/images/unibaub/sensiot:latest "Get your own version badge on microbadger.com")
 [![](https://images.microbadger.com/badges/image/unibaub/sensiot:latest.svg)](https://microbadger.com/images/unibaub/sensiot:latest "Get your own image badge on microbadger.com")
-[![Docker Stars](https://img.shields.io/docker/stars/unibaub/sensiot.svg?style=popout&logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/unibaub/sensiot.svg?style=popout&logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
+
+[![Docker Stars](https://img.shields.io/docker/stars/unibaub/sensiot.svg?logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/unibaub/sensiot.svg?logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
 
 ## Generalization of a Sensor Monitoring Framework for the Internet-of-Things (Bachelor Thesis)
 > Based on: _Environmental Monitoring of Libraries with [MonTreAL](http://dx.doi.org/10.1007/978-3-319-67008-9_52)_
