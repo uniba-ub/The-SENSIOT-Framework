@@ -26,7 +26,7 @@ RUN apk add -U --no-cache python3 python3-dev gcc linux-headers musl-dev file gi
     python3 setup.py install --force-pi2
 
 COPY requirements.txt /app/requirements.txt
-RUN pip3 install -v -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY src /app/
 RUN chmod +x /app/manager.py

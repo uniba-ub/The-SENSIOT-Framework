@@ -37,11 +37,12 @@ jobs:
       - run:
           name: Build image for arm32v6
           command: make ARCHITECTURES=arm32v6
+          no_output_timeout: 30m
       - run:
-          name: Test image for arm32v5
+          name: Test image for arm32v6
           command: make ARCHITECTURES=arm32v6 test
       - deploy:
-          name: Push image for arm32v5 to dockerhub
+          name: Push image for arm32v6 to dockerhub
           command: make ARCHITECTURES=arm32v6 push
   build_arm64v8:
     <<: *defaults
@@ -50,6 +51,7 @@ jobs:
       - run:
           name: Build image for arm64v8
           command: make ARCHITECTURES=arm64v8
+          no_output_timeout: 30m
       - run:
           name: Test image for arm64v8
           command: make ARCHITECTURES=arm64v8 test
