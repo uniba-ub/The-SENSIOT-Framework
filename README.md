@@ -1,7 +1,8 @@
 # __The SENSIOT Framework__
-[![Build Status](https://travis-ci.org/r3r57/The-SENSIOT-Framework.svg?branch=master)](https://travis-ci.org/r3r57/The-SENSIOT-Framework)
-[![Docker Stars](https://img.shields.io/docker/stars/r3r57/sensiot.svg)](https://hub.docker.com/r/r3r57/sensiot/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/r3r57/sensiot.svg)](https://hub.docker.com/r/r3r57/sensiot/)
+[![CircleCI](https://circleci.com/gh/uniba-ktr/The-SENSIOT-Framework.svg?style=svg)](https://circleci.com/gh/uniba-ktr/The-SENSIOT-Framework)
+
+[![Docker Stars](https://img.shields.io/docker/stars/unibaub/sensiot.svg)](https://hub.docker.com/r/unibaub/sensiot/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/unibaub/sensiot.svg)](https://hub.docker.com/r/unibaub/sensiot/)
 
 ## Generalization of a Sensor Monitoring Framework for the Internet-of-Things (Bachelor Thesis)
 > Based on: _Environmental Monitoring of Libraries with [MonTreAL](http://dx.doi.org/10.1007/978-3-319-67008-9_52)_
@@ -17,10 +18,6 @@ Beside the source code this repository automatically builds and pushes new versi
 Mostly for testing purposes this repository contains a docker compose file to just run the SENSIOT Framework out of the box with a sensor mock as sensor.
 ```
 docker-compose up --build
-```
-or just build the docker image
-```
-make build
 ```
 
 ### Run the SENSIOT Framework (amd64/arm)

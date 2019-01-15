@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Build image for arm32v6
           command: make ARCHITECTURES=arm32v6
-          no_output_timeout: 30m
+          no_output_timeout: 60m
       - run:
           name: Test image for arm32v6
           command: make ARCHITECTURES=arm32v6 test
