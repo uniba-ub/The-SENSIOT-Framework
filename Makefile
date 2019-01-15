@@ -1,5 +1,5 @@
-ARCHITECTURES = amd64 i386 arm32v5 arm32v7 arm64v8
-IMAGE_TARGET = python:3.6-slim
+ARCHITECTURES = amd64 i386 arm32v6 arm64v8
+IMAGE_TARGET = alpine
 MULTIARCH = multiarch/qemu-user-static:register
 QEMU_VERSION = v2.11.0
 VERSION = $(shell cat VERSION)

@@ -1,4 +1,4 @@
-ARG IMAGE_TARGET=python:3.6.2-slim
+ARG IMAGE_TARGET=alpine
 
 # first image to download qemu and make it executable
 FROM alpine AS qemu
@@ -18,13 +18,18 @@ ARG VCS_URL
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /app
-RUN apt-get -q update && \
-    apt-get install -qqy --no-install-recommends \
-    gcc build-essential python3-dev git && \
+#RUN apt-get -q update && \
+#    apt-get install -qqy --no-install-recommends \
+#    gcc build-essential python3-dev git && \
+#    git clone https://github.com/adafruit/Adafruit_Python_DHT.git && \
+#    cd Adafruit_Python_DHT && \
+#    python3 setup.py install --force-pi2 && \
+#    rm -rf /var/lib/apt/lists/*
+
+RUN apk add -U --no-cache python3 python3-dev gcc linux-headers musl-dev git && \
     git clone https://github.com/adafruit/Adafruit_Python_DHT.git && \
     cd Adafruit_Python_DHT && \
-    python3 setup.py install --force-pi2 && \
-    rm -rf /var/lib/apt/lists/*
+    python3 setup.py install --force-pi2 
 
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
