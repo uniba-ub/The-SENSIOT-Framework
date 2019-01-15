@@ -1,8 +1,10 @@
 # __The SENSIOT Framework__
 [![CircleCI](https://circleci.com/gh/uniba-ktr/The-SENSIOT-Framework.svg?style=svg)](https://circleci.com/gh/uniba-ktr/The-SENSIOT-Framework)
-
-[![Docker Stars](https://img.shields.io/docker/stars/unibaub/sensiot.svg)](https://hub.docker.com/r/unibaub/sensiot/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/unibaub/sensiot.svg)](https://hub.docker.com/r/unibaub/sensiot/)
+[![License](https://img.shields.io/github/license/uniba-ktr/The-SENSIOT-Framework.svg?style=popout)]()
+[![](https://images.microbadger.com/badges/version/unibaub/sensiot:latest.svg)](https://microbadger.com/images/unibaub/sensiot:latest "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/unibaub/sensiot:latest.svg)](https://microbadger.com/images/unibaub/sensiot:latest "Get your own image badge on microbadger.com")
+[![Docker Stars](https://img.shields.io/docker/stars/unibaub/sensiot.svg?style=popout&logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/unibaub/sensiot.svg?style=popout&logo=docker)](https://hub.docker.com/r/unibaub/sensiot/)
 
 ## Generalization of a Sensor Monitoring Framework for the Internet-of-Things (Bachelor Thesis)
 > Based on: _Environmental Monitoring of Libraries with [MonTreAL](http://dx.doi.org/10.1007/978-3-319-67008-9_52)_
@@ -63,7 +65,7 @@ Sensor devices can be added afterwards. Files in `swarm-setup/` can be adjusted 
     "mock": {
       "service": "temperature_humidity_sensor",
       "type": "mock",
-      "image": "r3r57/sensiot:latest-multiarch",
+      "image": "unibaub/sensiot",
       "device": [],
       "command": "",
       "configuration": {
@@ -78,7 +80,7 @@ Sensor devices can be added afterwards. Files in `swarm-setup/` can be adjusted 
     "ash2200": {
       "service": "temperature_humidity_sensor",
       "type": "ash2200",
-      "image": "r3r57/sensiot:latest-multiarch",
+      "image": "unibaub/sensiot",
       "device": ["/dev/ttyUSB0"],
       "command": "",
       "configuration": {
@@ -92,7 +94,7 @@ Sensor devices can be added afterwards. Files in `swarm-setup/` can be adjusted 
     "dht": {
       "service": "temperature_humidity_sensor",
       "type": "dht",
-      "image": "r3r57/sensiot:latest-multiarch",
+      "image": "unibaub/sensiot",
       "devices": ["/dev/mem"],
       "command": "",
       "configuration": {
@@ -107,7 +109,7 @@ Sensor devices can be added afterwards. Files in `swarm-setup/` can be adjusted 
     "open_weather_map": {
       "service": "temperature_humidity_sensor",
       "type": "openweathermap",
-      "image": "r3r57/sensiot:latest-multiarch",
+      "image": "unibaub/sensiot",
       "devices": [],
       "command": "",
       "configuration": {

@@ -1,4 +1,4 @@
-ARCHITECTURES = amd64 i386 arm32v6 arm64v8
+ARCHITECTURES = amd64 i386 arm64v8
 IMAGE_TARGET = alpine
 MULTIARCH = multiarch/qemu-user-static:register
 QEMU_VERSION = v2.11.0
