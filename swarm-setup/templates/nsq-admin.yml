@@ -10,7 +10,7 @@ networks:
 
 services:
   nsqadmin:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: ["nsqadmin", "--lookupd-http-address=nsqlookupd:4161"]
     networks:
       traefik-net:

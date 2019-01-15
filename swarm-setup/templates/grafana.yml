@@ -14,7 +14,7 @@ secrets:
 
 services:
   grafana:
-    image: grafana/grafana:latest
+    image: unibaktr/grafana
     volumes:
       - ./data/grafana:/var/lib/grafana
     # TODO: https://github.com/grafana/grafana-docker/issues/51

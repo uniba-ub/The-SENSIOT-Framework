@@ -7,7 +7,7 @@ networks:
 
 services:
   nsqcli:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     command: ["nsq_tail","-lookupd-http-address","nsqlookupd:4161","-topic","sensor_data"]
     networks:
       nsq-net:

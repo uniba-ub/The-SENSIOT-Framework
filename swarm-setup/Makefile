@@ -31,7 +31,7 @@ help:
 ###############################################
 DOCKER_USER?=r3r57
 DOMAIN?=sensiot.de
-IMAGE?=r3r57/sensiot:latest-multiarch
+IMAGE?=unibaub/sensiot
 NETWORK_OPTIONS?=--opt encrypted --attachable --driver overlay
 DIRECTORIES?=influxdb chronograf grafana prometheus portainer
 

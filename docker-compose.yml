@@ -6,7 +6,7 @@ networks:
 
 services:
   nsqlookupd:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: nsqlookupd
     ports:
       - "4160:4160"
@@ -15,7 +15,7 @@ services:
       backend:
 
   nsqd:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: ["nsqd", "--lookupd-tcp-address=nsqlookupd:4160"]
     ports:
       - "4150:4150"
@@ -24,7 +24,7 @@ services:
       backend:
 
   nsqadmin:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: ["nsqadmin", "--lookupd-http-address=nsqlookupd:4161"]
     networks:
       backend:
@@ -32,7 +32,7 @@ services:
       - "4171:4171"
 
   nsqcli:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     command: ["nsq_tail","-lookupd-http-address","nsqlookupd:4161","-topic","sensors"]
     networks:
       backend:
@@ -58,7 +58,7 @@ services:
       - "8888:8888"
 
   grafana:
-    image: grafana/grafana:latest
+    image: unibaktr/grafana
     # TODO: https://github.com/grafana/grafana-docker/issues/51
     # secrets:
     #   - source: grafana.ini
@@ -72,7 +72,7 @@ services:
       - "3000:3000"
 
   prometheus:
-    image: prom/prometheus
+    image: unibaktr/prometheus
     volumes:
       - ./config/prometheus/:/etc/prometheus/
     command:
@@ -86,8 +86,8 @@ services:
   local_manager:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/sensiot.json:/app/sensiot.json
@@ -103,8 +103,8 @@ services:
   json_memcache_writer:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -118,8 +118,8 @@ services:
   influxdb_writer:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -133,8 +133,8 @@ services:
   prometheus_writer:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -150,8 +150,8 @@ services:
   web:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -167,8 +167,8 @@ services:
   sensor_list:
     build:
       context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+      dockerfile: Dockerfile
+    image: unibaub/sensiot
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
