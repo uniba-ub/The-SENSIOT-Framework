@@ -16,13 +16,13 @@ An ever-increasing amount of devices connected over the Internet pave the road t
 Beside the source code this repository automatically builds and pushes new versions to the registry and it includes the _swarm setup_, which contains the whole procedure to deploy the SENSIOT Framework.
 
 ## Supported Architectures
-This multiarch image supports `amd64`, `i386`, `arm32v6`, `arm64v8`, `ppc64le`, and `s390x` on Linux.
+This multiarch image supports `amd64`, `i386`, `arm32v6`, `arm64v8`, and `ppc64le` on Linux.
 
 ## How to use
 ### Test Setup (amd64)
 Mostly for testing purposes this repository contains a docker compose file to just run the SENSIOT Framework out of the box with a sensor mock as sensor.
 ```
-docker-compose -p sensiot up --build
+docker-compose -p sensiot up -d
 ```
 
 ### Run the SENSIOT Framework (amd64/arm)

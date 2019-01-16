@@ -72,20 +72,6 @@ jobs:
       - deploy:
           name: Push image for ppc64le to dockerhub
           command: make ARCHITECTURES=ppc64le push
-  build_s390x:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Build image for s390x
-          command: make ARCHITECTURES=s390x
-          no_output_timeout: 30m
-      - run:
-          name: Test image for s390x
-          command: make ARCHITECTURES=s390x test
-      - deploy:
-          name: Push image for s390x to dockerhub
-          command: make ARCHITECTURES=s390x push
   manifest:
     <<: *defaults
     steps:
@@ -115,8 +101,6 @@ workflows:
           <<: *tag_filter
       - build_ppc64le:
           <<: *tag_filter
-      - build_s390x:
-          <<: *tag_filter
       - manifest:
           requires:
             - build_amd64
@@ -124,7 +108,6 @@ workflows:
             - build_arm32v6
             - build_arm64v8
             - build_ppc64le
-            - build_s390x
           <<: *tag_filter
       - badge:
           requires:

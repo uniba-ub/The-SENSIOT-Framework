@@ -33,7 +33,7 @@ RUN chmod +x /app/manager.py
 
 ENTRYPOINT ["/app/manager.py"]
 
-LABEL de.uniba.ub.sensiot.schema-version="1.0" \
+LABEL de.uniba.ub.sensiot.schema-version=$VERSION \
       de.uniba.ub.sensiot.vendor="University Library Bamberg" \
       de.uniba.ub.sensiot.build-date=$BUILD_DATE \
       de.uniba.ub.sensiot.architecture=$ARCH \

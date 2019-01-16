@@ -1,4 +1,4 @@
-ARCHITECTURES = amd64 i386 arm32v6 arm64v8 ppc64le s390x
+ARCHITECTURES = amd64 i386 arm32v6 arm64v8 ppc64le
 IMAGE_TARGET = alpine
 MULTIARCH = multiarch/qemu-user-static:register
 QEMU_VERSION = v2.11.0
@@ -17,6 +17,7 @@ endif
 all: $(ARCHITECTURES)
 
 $(ARCHITECTURES):
+	@docker version
 	@docker run --rm --privileged $(MULTIARCH) --reset
 	@docker build \
 			--build-arg IMAGE_TARGET=$@/$(IMAGE_TARGET) \
