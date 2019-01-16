@@ -26,7 +26,7 @@
         "sensor_mock_1": {
           "service": "temperature_humidity_sensor",
           "type": "mock",
-          "image": "sensiot:develop-amd64",
+          "image": "unibaub/sensiot",
           "devices": [],
           "command": "",
           "configuration": {
@@ -39,7 +39,7 @@
         "sensor_mock_2": {
           "service": "temperature_humidity_sensor",
           "type": "mock",
-          "image": "sensiot:develop-amd64",
+          "image": "unibaub/sensiot",
           "devices": [],
           "command": "",
           "configuration": {

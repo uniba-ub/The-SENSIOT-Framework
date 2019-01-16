@@ -26,7 +26,7 @@
         "sensor_mock_1": {
           "service": "temperature_humidity_sensor",
           "type": "mock",
-          "image": "r3r57/sensiot:latest-multiarch",
+          "image": "unibaub/sensiot",
           "devices": [],
           "command": "",
           "configuration": {
