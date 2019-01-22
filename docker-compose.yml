@@ -51,6 +51,8 @@ services:
 
   chronograf:
     image: chronograf:latest
+    depends_on:
+      - influxdb
     command: chronograf --influxdb-url=http://influxdb:8086
     networks:
       backend:
@@ -59,6 +61,8 @@ services:
 
   grafana:
     image: unibaktr/grafana
+    depends_on:
+      - prometheus
     # TODO: https://github.com/grafana/grafana-docker/issues/51
     # secrets:
     #   - source: grafana.ini
@@ -84,9 +88,6 @@ services:
 
 #################################################
   local_manager:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -101,10 +102,9 @@ services:
 
 #################################################
   json_memcache_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -116,10 +116,9 @@ services:
 
 #################################################
   influxdb_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
+    depends_on:
+      - influxdb
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -131,10 +130,9 @@ services:
 
 #################################################
   prometheus_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
+    depends_on:
+      - prometheus
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -148,10 +146,9 @@ services:
 
 #################################################
   web:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -165,10 +162,9 @@ services:
 
 #################################################
   sensor_list:
-    build:
-      context: ./
-      dockerfile: Dockerfile
     image: unibaub/sensiot
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:

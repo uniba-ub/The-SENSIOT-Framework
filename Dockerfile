@@ -20,13 +20,16 @@ ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /app
 
-RUN apk add -U --no-cache python3 python3-dev gcc linux-headers musl-dev file git && \
+COPY requirements.txt /app/requirements.txt
+
+RUN apk add -U --no-cache python3 py3-gevent py3-flask file && \
+    apk add -U --virtual build-dependencies python3-dev gcc linux-headers musl-dev file git && \
     git clone https://github.com/adafruit/Adafruit_Python_DHT.git && \
     cd Adafruit_Python_DHT && \
-    python3 setup.py install --force-pi2
-
-COPY requirements.txt /app/requirements.txt
-RUN pip3 install -r requirements.txt
+    python3 setup.py install --force-pi2 && \
+    cd .. && \
+    pip3 install --no-cache-dir -r requirements.txt && \
+    apk del build-dependencies
 
 COPY src /app/
 RUN chmod +x /app/manager.py
