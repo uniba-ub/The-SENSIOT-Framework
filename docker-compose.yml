@@ -8,6 +8,7 @@ services:
   nsqlookupd:
     image: unibaktr/nsq
     entrypoint: nsqlookupd
+    restart: on-failure
     ports:
       - "4160:4160"
       - "4161:4161"
@@ -17,6 +18,7 @@ services:
   nsqd:
     image: unibaktr/nsq
     entrypoint: ["nsqd", "--lookupd-tcp-address=nsqlookupd:4160"]
+    restart: on-failure
     ports:
       - "4150:4150"
       - "4151:4151"
@@ -26,6 +28,7 @@ services:
   nsqadmin:
     image: unibaktr/nsq
     entrypoint: ["nsqadmin", "--lookupd-http-address=nsqlookupd:4161"]
+    restart: on-failure
     networks:
       backend:
     ports:
@@ -34,6 +37,7 @@ services:
   nsqcli:
     image: unibaktr/nsq
     command: ["nsq_tail","-lookupd-http-address","nsqlookupd:4161","-topic","sensors"]
+    restart: on-failure
     networks:
       backend:
     restart: on-failure
@@ -41,16 +45,19 @@ services:
   memcached:
     image: memcached:latest
     command: memcached -vv
+    restart: on-failure
     networks:
       backend:
 
   influxdb:
     image: influxdb:latest
+    restart: on-failure
     networks:
       backend:
 
   chronograf:
     image: chronograf:latest
+    restart: on-failure
     depends_on:
       - influxdb
     command: chronograf --influxdb-url=http://influxdb:8086
@@ -61,6 +68,7 @@ services:
 
   grafana:
     image: unibaktr/grafana
+    restart: on-failure
     depends_on:
       - prometheus
     # TODO: https://github.com/grafana/grafana-docker/issues/51
@@ -77,6 +85,7 @@ services:
 
   prometheus:
     image: unibaktr/prometheus
+    restart: on-failure
     volumes:
       - ./config/prometheus/:/etc/prometheus/
     command:
@@ -89,6 +98,7 @@ services:
 #################################################
   local_manager:
     image: unibaub/sensiot
+    restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/sensiot.json:/app/sensiot.json
@@ -103,6 +113,7 @@ services:
 #################################################
   json_memcache_writer:
     image: unibaub/sensiot
+    restart: on-failure
     depends_on:
       - memcached
     volumes:
@@ -117,6 +128,7 @@ services:
 #################################################
   influxdb_writer:
     image: unibaub/sensiot
+    restart: on-failure
     depends_on:
       - influxdb
     volumes:
@@ -131,6 +143,7 @@ services:
 #################################################
   prometheus_writer:
     image: unibaub/sensiot
+    restart: on-failure
     depends_on:
       - prometheus
     volumes:
@@ -147,6 +160,7 @@ services:
 #################################################
   web:
     image: unibaub/sensiot
+    restart: on-failure
     depends_on:
       - memcached
     volumes:
@@ -163,6 +177,7 @@ services:
 #################################################
   sensor_list:
     image: unibaub/sensiot
+    restart: on-failure
     depends_on:
       - memcached
     volumes:

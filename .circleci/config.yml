@@ -37,7 +37,6 @@ jobs:
       - run:
           name: Build image for arm32v6
           command: make ARCHITECTURES=arm32v6
-          no_output_timeout: 360m
       - run:
           name: Test image for arm32v6
           command: make ARCHITECTURES=arm32v6 test
@@ -51,7 +50,6 @@ jobs:
       - run:
           name: Build image for arm64v8
           command: make ARCHITECTURES=arm64v8
-          no_output_timeout: 30m
       - run:
           name: Test image for arm64v8
           command: make ARCHITECTURES=arm64v8 test
@@ -65,7 +63,6 @@ jobs:
       - run:
           name: Build image for ppc64le
           command: make ARCHITECTURES=ppc64le
-          no_output_timeout: 30m
       - run:
           name: Test image for ppc64le
           command: make ARCHITECTURES=ppc64le test
