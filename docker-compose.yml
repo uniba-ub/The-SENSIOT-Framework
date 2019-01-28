@@ -78,6 +78,8 @@ services:
     # Alternative:
     env_file:
       - ./config/grafana/grafana.env
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
     networks:
       backend:
     ports:
