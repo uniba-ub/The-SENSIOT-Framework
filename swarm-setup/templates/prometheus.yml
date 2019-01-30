@@ -14,7 +14,7 @@ secrets:
 
 services:
   prometheus:
-    image: prom/prometheus:latest
+    image: unibaktr/prometheus
     volumes:
       - ./data/prometheus:/etc/prometheus
     command:

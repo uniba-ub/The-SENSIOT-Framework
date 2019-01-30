@@ -6,8 +6,9 @@ networks:
 
 services:
   nsqlookupd:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: nsqlookupd
+    restart: on-failure
     ports:
       - "4160:4160"
       - "4161:4161"
@@ -15,8 +16,9 @@ services:
       backend:
 
   nsqd:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: ["nsqd", "--lookupd-tcp-address=nsqlookupd:4160"]
+    restart: on-failure
     ports:
       - "4150:4150"
       - "4151:4151"
@@ -24,16 +26,18 @@ services:
       backend:
 
   nsqadmin:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     entrypoint: ["nsqadmin", "--lookupd-http-address=nsqlookupd:4161"]
+    restart: on-failure
     networks:
       backend:
     ports:
       - "4171:4171"
 
   nsqcli:
-    image: nsqio/nsq:latest
+    image: unibaktr/nsq
     command: ["nsq_tail","-lookupd-http-address","nsqlookupd:4161","-topic","sensors"]
+    restart: on-failure
     networks:
       backend:
     restart: on-failure
@@ -41,16 +45,21 @@ services:
   memcached:
     image: memcached:latest
     command: memcached -vv
+    restart: on-failure
     networks:
       backend:
 
   influxdb:
     image: influxdb:latest
+    restart: on-failure
     networks:
       backend:
 
   chronograf:
     image: chronograf:latest
+    restart: on-failure
+    depends_on:
+      - influxdb
     command: chronograf --influxdb-url=http://influxdb:8086
     networks:
       backend:
@@ -58,7 +67,10 @@ services:
       - "8888:8888"
 
   grafana:
-    image: grafana/grafana:latest
+    image: unibaktr/grafana
+    restart: on-failure
+    depends_on:
+      - prometheus
     # TODO: https://github.com/grafana/grafana-docker/issues/51
     # secrets:
     #   - source: grafana.ini
@@ -66,13 +78,16 @@ services:
     # Alternative:
     env_file:
       - ./config/grafana/grafana.env
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
     networks:
       backend:
     ports:
       - "3000:3000"
 
   prometheus:
-    image: prom/prometheus
+    image: unibaktr/prometheus
+    restart: on-failure
     volumes:
       - ./config/prometheus/:/etc/prometheus/
     command:
@@ -84,10 +99,8 @@ services:
 
 #################################################
   local_manager:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/sensiot.json:/app/sensiot.json
@@ -101,10 +114,10 @@ services:
 
 #################################################
   json_memcache_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -116,10 +129,10 @@ services:
 
 #################################################
   influxdb_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
+    depends_on:
+      - influxdb
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -131,10 +144,10 @@ services:
 
 #################################################
   prometheus_writer:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
+    depends_on:
+      - prometheus
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -148,10 +161,10 @@ services:
 
 #################################################
   web:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:
@@ -165,10 +178,10 @@ services:
 
 #################################################
   sensor_list:
-    build:
-      context: ./
-      dockerfile: Dockerfile.amd64
-    image: r3r57/sensiot:develop-amd64
+    image: unibaub/sensiot
+    restart: on-failure
+    depends_on:
+      - memcached
     volumes:
       - ./config/sensiot.json:/app/sensiot.json
     networks:

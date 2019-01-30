@@ -23,29 +23,16 @@
       "label": "sensiot-sensor-container",
       "network_name": "sensiot_backend",
       "global_sensors": {
-        "sensor_mock_1": {
+        "sensor_mock": {
           "service": "temperature_humidity_sensor",
           "type": "mock",
-          "image": "sensiot:develop-amd64",
+          "image": "unibaub/sensiot",
           "devices": [],
           "command": "",
           "configuration": {
             "sensor_count": 5,
             "temperature": 25.0,
             "humidity": 62.0,
-            "interval": 60
-          }
-        },
-        "sensor_mock_2": {
-          "service": "temperature_humidity_sensor",
-          "type": "mock",
-          "image": "sensiot:develop-amd64",
-          "devices": [],
-          "command": "",
-          "configuration": {
-            "sensor_count": 5,
-            "temperature": -25.0,
-            "humidity": -62.0,
             "interval": 60
           }
         }
